@@ -1,0 +1,26 @@
+services:
+  nginx:
+    container_name: nginx
+    image: nginx
+    build: ./requirements/nginx
+    ports:
+      - "443:443"
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - inception
+    #depends_on:
+     # - wordpress
+    restart: unless-stopped
+
+volumes:
+  wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/lbento/data/wp_data
+
+networks:
+  inception:
+    driver: bridge
