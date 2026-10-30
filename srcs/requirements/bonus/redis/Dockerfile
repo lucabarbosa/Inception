@@ -5,7 +5,6 @@ RUN apt-get update && apt-get upgrade -y && \
 	&& rm -rf /var/lib/apt/lists/*
 
 COPY conf/redis.conf /etc/redis/redis.conf
-RUN chmod +x /usr/local/bin/redis.sh
 
 EXPOSE 6379
 
