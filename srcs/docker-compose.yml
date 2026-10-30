@@ -13,6 +13,25 @@ services:
      # - wordpress
     restart: unless-stopped
 
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    build: ./requirements/mariadb
+    env_file: .env
+    secrets:
+      - mdb_password
+      - mdb_root_password
+    volumes:
+      - mdb_data:/var/lib/mysql
+    networks:
+      - inception
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "--silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
 volumes:
   wp_data:
     driver: local
@@ -20,6 +39,22 @@ volumes:
       type: none
       o: bind
       device: /home/lbento/data/wp_data
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/lbento/data/db_data
+
+secrets:
+  mdb_name:
+    file: ../secrets/mdb_name.txt
+  mdb_user:
+    file: ../secrets/mdb_user.txt
+  mdb_password:
+    file: ../secrets/mdb_password.txt
+  mdb_root_password:
+    file: ../secrets/mdb_root_password.txt
 
 networks:
   inception:
