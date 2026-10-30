@@ -2,10 +2,16 @@ NAME = inception
 
 SRC_DIR = ./srcs
 DOCKER_COMPOSE = $(SRC_DIR)/docker-compose.yml
+SECRETS_DIR = ./secrets
+SECRETS = mdb_name mdb_user mdb_password mdb_root_password \
+	wp_admin_password wp_user_password
 
 all: setup up
 
 setup:
+	@for s in $(SECRETS); do \
+		[ -s $(SECRETS_DIR)/$$s.txt ] || { echo "Missing $(SECRETS_DIR)/$$s.txt"; exit 1; }; \
+	done
 	@grep -q "lbento.42.fr" /etc/hosts || echo "127.0.0.1 lbento.42.fr" | sudo tee -a /etc/hosts > /dev/null
 	@sudo mkdir -p /home/lbento/data/wp_data
 	@sudo mkdir -p /home/lbento/data/db_data
