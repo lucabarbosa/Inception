@@ -26,8 +26,8 @@ esac
 
 log "Waiting for MariaDB..."
 tries=0
-until MYSQL_PWD="${DB_PASSWORD}" mariadb -h mariadb -u "${DB_USER}" \
-		-e "SELECT 1;" "${DB_NAME}" > /dev/null 2>&1; do
+until MYSQL_PWD="${DB_PASSWORD}" mariadb -h mariadb -u "${MDB_USER}" \
+		-e "SELECT 1;" "${MDB_NAME}" > /dev/null 2>&1; do
 	tries=$((tries + 1))
 	if [ "${tries}" -ge 30 ]; then
 		log "ERROR: MariaDB did not respond in time."
@@ -47,8 +47,8 @@ fi
 if [ ! -f wp-config.php ]; then
 	log "Creating wp-config.php..."
 	wp config create --allow-root \
-		--dbname="${DB_NAME}" \
-		--dbuser="${DB_USER}" \
+		--dbname="${MDB_NAME}" \
+		--dbuser="${MDB_USER}" \
 		--dbpass="${DB_PASSWORD}" \
 		--dbhost="${DB_HOST}"
 fi
