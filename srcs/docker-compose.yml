@@ -9,8 +9,28 @@ services:
       - wp_data:/var/www/html
     networks:
       - inception
-    #depends_on:
-     # - wordpress
+    depends_on:
+      - wordpress
+    restart: unless-stopped
+
+  wordpress:
+    container_name: wordpress
+    image: wordpress
+    build: ./requirements/wordpress
+    env_file: .env
+    secrets:
+      - mdb_name
+      - mdb_user
+      - mdb_password
+      - wp_admin_password
+      - wp_user_password
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - inception
+    depends_on:
+      mariadb:
+        condition: service_healthy
     restart: unless-stopped
 
   mariadb:
@@ -57,6 +77,10 @@ secrets:
     file: ../secrets/mdb_password.txt
   mdb_root_password:
     file: ../secrets/mdb_root_password.txt
+  wp_admin_password:
+    file: ../secrets/wp_admin_password.txt
+  wp_user_password:
+    file: ../secrets/wp_user_password.txt
 
 networks:
   inception:
