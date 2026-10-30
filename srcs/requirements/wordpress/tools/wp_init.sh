@@ -26,7 +26,7 @@ esac
 
 log "Waiting for MariaDB..."
 tries=0
-until MYSQL_PWD="${DB_PASSWORD}" mariadb -h mariadb -u "${MDB_USER}" \
+until MYSQL_PWD="${MDB_PASSWORD}" mariadb -h mariadb -u "${MDB_USER}" \
 		-e "SELECT 1;" "${MDB_NAME}" > /dev/null 2>&1; do
 	tries=$((tries + 1))
 	if [ "${tries}" -ge 30 ]; then
@@ -49,7 +49,7 @@ if [ ! -f wp-config.php ]; then
 	wp config create --allow-root \
 		--dbname="${MDB_NAME}" \
 		--dbuser="${MDB_USER}" \
-		--dbpass="${DB_PASSWORD}" \
+		--dbpass="${MDB_PASSWORD}" \
 		--dbhost="${DB_HOST}"
 fi
 
@@ -69,6 +69,18 @@ if ! wp user get "${WP_USER}" --allow-root > /dev/null 2>&1; then
 	wp user create "${WP_USER}" "${WP_USER_EMAIL}" --allow-root \
 		--role=author \
 		--user_pass="${WP_USER_PASSWORD}"
+fi
+
+# --- BONUS ---
+log "Configuring Redis cache..."
+wp config set WP_REDIS_HOST redis --allow-root
+wp config set WP_REDIS_PORT 6379 --raw --allow-root
+if ! wp plugin is-installed redis-cache --allow-root; then
+	wp plugin install redis-cache --allow-root
+fi
+wp plugin activate redis-cache --allow-root
+if [ ! -f wp-content/object-cache.php ]; then
+	wp redis enable --allow-root
 fi
 
 chown -R www-data:www-data /var/www/html

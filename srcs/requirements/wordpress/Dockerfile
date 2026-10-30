@@ -10,6 +10,7 @@ RUN apt-get update && apt-get upgrade -y && \
 	php8.2-xml \
 	php8.2-zip \
 	php8.2-intl \
+	php8.2-redis \
 	mariadb-client \
 	curl \
 	ca-certificates \
