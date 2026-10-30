@@ -40,4 +40,4 @@ fclean: clean
 
 re: clean all
 
-.PHONY: all bonus setup up down logs ps clean flcean re
+.PHONY: all bonus setup up down stop start logs ps clean fclean re

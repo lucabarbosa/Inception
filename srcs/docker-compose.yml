@@ -19,10 +19,12 @@ services:
     build: ./requirements/mariadb
     env_file: .env
     secrets:
+      - mdb_name
+      - mdb_user
       - mdb_password
       - mdb_root_password
     volumes:
-      - mdb_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
     networks:
       - inception
     restart: unless-stopped
